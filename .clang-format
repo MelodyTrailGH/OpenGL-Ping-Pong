@@ -1,0 +1,25 @@
+﻿---
+BasedOnStyle: LLVM
+AlignEscapedNewlinesLeft: 'false'
+AlignTrailingComments: 'true'
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: 'true'
+AllowShortLoopsOnASingleLine: 'true'
+BreakBeforeTernaryOperators: 'true'
+Cpp11BracedListStyle: 'true'
+DerivePointerAlignment: 'true'
+DisableFormat: 'false'
+IndentWidth: '4'
+Language: Cpp
+NamespaceIndentation: All
+PointerAlignment: Right
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: 'true'
+SpacesInCStyleCastParentheses: 'true'
+SpacesInContainerLiterals: 'true'
+SpacesInParentheses: 'true'
+Standard: Cpp11
+TabWidth: '4'
+UseTab: ForIndentation
+
+...

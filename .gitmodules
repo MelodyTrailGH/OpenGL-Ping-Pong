@@ -1,0 +1,9 @@
+[submodule "Dependencies/SDL-2.28.x"]
+	path = Dependencies/SDL-2.28.x
+	url = https://github.com/libsdl-org/SDL.git
+[submodule "Dependencies/cglm-0.9.1"]
+	path = Dependencies/cglm-0.9.1
+	url = https://github.com/recp/cglm.git
+[submodule "Dependencies/glew-cmake-stable"]
+	path = Dependencies/glew-cmake-stable
+	url = https://github.com/Perlmint/glew-cmake.git
