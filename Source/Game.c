@@ -1,6 +1,5 @@
-#include "SDL_events.h"
-#include "SDL_video.h"
 #include <Config.h>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <stdbool.h>
@@ -42,4 +41,5 @@ int main( int argc, char **argv ) {
 	}
 
 	SDL_Quit( );
+	return EXIT_SUCCESS;
 }

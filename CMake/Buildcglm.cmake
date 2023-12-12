@@ -14,6 +14,12 @@ set(CGLM_USE_TEST
 add_subdirectory("${PONG_DEPENDENCIES_DIR}/cglm-0.9.1"
                  "${PONG_DEPENDENCIES_BUILD_DIR}/cglm")
 
+if (WIN32)
+set_target_properties(
+    cglm PROPERTIES 
+    RUNTIME_OUTPUT_DIRECTORY "${PONG_DEPENDENCIES_LIB_DIR}")
+else()
 set_target_properties(
   cglm PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${PONG_DEPENDENCIES_LIB_DIR}"
                   LIBRARY_OUTPUT_DIRECTORY "${PONG_DEPENDENCIES_LIB_DIR}")
+endif()
