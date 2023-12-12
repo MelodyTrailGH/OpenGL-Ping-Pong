@@ -1,5 +1,7 @@
 #include "SDL_events.h"
+#include "SDL_timer.h"
 #include "SDL_video.h"
+#include "Utility.h"
 #include <Config.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -29,6 +31,11 @@ int main( int argc, char **argv ) {
 	SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION );
 	SDL_GLContext *context = SDL_GL_CreateContext( window );
 
+	const char *vshader = readTextFile( text_format(
+	    "%s/%s/default.fs", getApplicationDirectory( ), RESOURCE_PATH ) );
+
+	fprintf( stdout, "%s\n", vshader );
+
 	bool should_close = false;
 	while ( !should_close ) {
 		SDL_Event event;
@@ -39,6 +46,7 @@ int main( int argc, char **argv ) {
 		}
 		glClear( GL_COLOR_BUFFER_BIT );
 		SDL_GL_SwapWindow( window );
+		SDL_Delay( 16 );
 	}
 
 	SDL_Quit( );
