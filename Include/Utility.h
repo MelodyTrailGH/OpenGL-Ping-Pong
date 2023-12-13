@@ -69,5 +69,15 @@ extern const char *readTextFileDesc( FILE *fd );
 
 extern const char *getApplicationDirectory( );
 
+extern uint64_t text_length( const char *src );
+extern char *text_copy( const char *src );
+extern char *text_copy_length( const char *src, uint64_t length );
+
+extern char *text_replace_char( const char *src, const char find,
+                                const char repl );
+
 extern char *text_format( char *fmt, ... );
+
+uint32_t createShader( const char *vertex_shader_source,
+                       const char *fragment_shader_source );
 #endif // UTILITY_H

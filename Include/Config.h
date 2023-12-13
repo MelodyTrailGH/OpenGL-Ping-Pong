@@ -15,4 +15,8 @@ const char RESOURCE_PATH[14] = "../Resources";
 #endif
 #endif
 
+#define PADDLE_MIN_Y 0
+#define PADDLE_MAX_Y WINDOW_HEIGHT
+#define PADDLE_SPEED 4
+
 #endif // GAME_CONFIG_H
