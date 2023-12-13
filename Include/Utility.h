@@ -27,6 +27,8 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NORMALIZE( value ) ( 1.0F / 255.0F ) * value
+
 /**
  * @brief Gets the size of a file.
  *

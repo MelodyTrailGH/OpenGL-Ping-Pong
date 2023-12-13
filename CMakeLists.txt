@@ -26,7 +26,7 @@ set(PONG_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/Include")
 set(PONG_SOURCES
     "${PONG_SOURCE_DIR}/whereami.c" "${PONG_SOURCE_DIR}/Utility.c"
     "${PONG_SOURCE_DIR}/Graphics.c" "${PONG_SOURCE_DIR}/Keyboard.c"
-    "${PONG_SOURCE_DIR}/Paddle.c" "${PONG_SOURCE_DIR}/Game.c")
+    "${PONG_SOURCE_DIR}/Game.c")
 
 add_executable(${PONG_TARGET})
 target_sources(${PONG_TARGET} PRIVATE ${PONG_SOURCES})

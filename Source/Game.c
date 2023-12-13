@@ -1,8 +1,6 @@
-#include "SDL_scancode.h"
-#include "SDL_video.h"
-#include "Utility.h"
 #include <Config.h>
 #include <Graphics.h>
+#include <Utility.h>
 #define SDL_MAIN_HANDLED
 #include <GL/glew.h>
 #include <Keyboard.h>
@@ -14,52 +12,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NORMALIZE( value ) ( 1.0F / 255.0F ) * value
-
-SDL_Window *window;
-SDL_GLContext *context;
+SDL_Window *window = NULL;
+SDL_GLContext *context = NULL;
 
 void initialize( );
+
+void update( float delta );
+void draw( );
+
+void updatePaddles( float delta );
+void drawPaddles( );
+
+float paddle1YPosition = ( float )PADDLE_START_Y;
+float paddle2YPosition = ( float )PADDLE_START_Y;
+
+uint32_t defaultShader;
+
+bool shouldClose = false;
 
 int main( void ) {
 
 	initialize( );
 
-	uint32_t camera_shader = createShader(
+	defaultShader = createShader(
 	    readTextFile( text_format(
 	        "%s/%s/default.vs", getApplicationDirectory( ), RESOURCE_PATH ) ),
 	    readTextFile( text_format(
 	        "%s/%s/default.fs", getApplicationDirectory( ), RESOURCE_PATH ) ) );
 
-	bool should_close = false;
-
 	initializeKeyboard( );
-	while ( !should_close ) {
+
+	uint64_t currentTime = 0;
+	uint64_t previousTime = 0;
+	float delta = 0.0f;
+	while ( !shouldClose ) {
 		SDL_Event event;
 		while ( SDL_PollEvent( &event ) ) {
 			if ( event.type == SDL_QUIT ) {
-				should_close = true;
+				shouldClose = true;
 			}
 		}
-		updateKeyboard( );
-		if ( isKeyPressed( SDL_SCANCODE_ESCAPE ) ) {
-			should_close = true;
-		}
-
-		glClear( GL_COLOR_BUFFER_BIT );
-		drawRectangle( 0, 0, 32, 32 );
-		glUseProgram( camera_shader );
-
-		mat4 projection_matrix = GLM_MAT4_IDENTITY_INIT;
-		glmc_ortho( 0.0f, ( float )WINDOW_WIDTH, ( float )WINDOW_HEIGHT, 0.0f,
-		            0.0f, 1.0f, projection_matrix );
-		glUniform4f( glGetUniformLocation( camera_shader, "color" ), 1.0f, 0.0f,
-		             0.0f, 1.0 );
-		glUniformMatrix4fv( glGetUniformLocation( camera_shader, "projection" ),
-		                    1, GL_FALSE, projection_matrix[0] );
+		previousTime = currentTime;
+		currentTime = SDL_GetTicks64( );
+		delta = ( ( ( float )currentTime - ( float )previousTime ) / 16.6f );
+		update( delta );
+		draw( );
 
 		SDL_GL_SwapWindow( window );
-		SDL_Delay( 16 );
+		SDL_Delay( 32 );
 	}
 	SDL_GL_DeleteContext( context );
 	SDL_DestroyWindow( window );
@@ -99,4 +99,58 @@ void initialize( ) {
 		         glewGetErrorString( glew_err ) );
 		exit( EXIT_FAILURE );
 	}
+}
+
+void update( float delta ) {
+	updateKeyboard( );
+	if ( isKeyPressed( SDL_SCANCODE_ESCAPE ) ) {
+		shouldClose = true;
+	}
+	updatePaddles( delta );
+}
+
+void updatePaddles( float delta ) {
+	if ( isKeyDown( PADDLE_1_UP ) ) {
+		paddle1YPosition -= ( float )PADDLE_SPEED * delta;
+	}
+
+	if ( isKeyDown( PADDLE_1_DOWN ) ) {
+		paddle1YPosition += ( float )PADDLE_SPEED * delta;
+	}
+
+	if ( isKeyDown( PADDLE_2_UP ) ) {
+		paddle2YPosition -= ( float )PADDLE_SPEED * delta;
+	}
+
+	if ( isKeyDown( PADDLE_2_DOWN ) ) {
+		paddle2YPosition += ( float )PADDLE_SPEED * delta;
+	}
+}
+void draw( ) {
+	glClear( GL_COLOR_BUFFER_BIT );
+	glUseProgram( defaultShader );
+
+	mat4 projection_matrix = GLM_MAT4_IDENTITY_INIT;
+	glmc_ortho( 0.0f, ( float )WINDOW_WIDTH, ( float )WINDOW_HEIGHT, 0.0f, 0.0f,
+	            1.0f, projection_matrix );
+
+	glUniformMatrix4fv( glGetUniformLocation( defaultShader, "projection" ), 1,
+	                    GL_FALSE, projection_matrix[0] );
+
+	glUniform4f( glGetUniformLocation( defaultShader, "color" ), CLEAR_COLOR_R,
+	             CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A );
+	drawRectangle( 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT );
+	drawPaddles( );
+}
+
+void drawPaddles( ) {
+	glUniform4f( glGetUniformLocation( defaultShader, "color" ), 1.0f, 0.0f,
+	             0.0f, 1.0 );
+	drawRectangle( PADDLE_1_X, ( int32_t )paddle1YPosition, PADDLE_WIDTH,
+	               PADDLE_HEIGHT );
+
+	glUniform4f( glGetUniformLocation( defaultShader, "color" ), 0.0f, 1.0f,
+	             0.0f, 1.0 );
+	drawRectangle( PADDLE_2_X, ( int32_t )paddle2YPosition, PADDLE_WIDTH,
+	               PADDLE_HEIGHT );
 }
