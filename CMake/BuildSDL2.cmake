@@ -15,10 +15,3 @@ set(SDL_STATIC
     CACHE BOOL "" FORCE)
 add_subdirectory("${PONG_DEPENDENCIES_DIR}/SDL-2.28.x"
                  "${PONG_DEPENDENCIES_BUILD_DIR}/SDL2")
-
-if(WIN32)
-  set_target_properties(SDL2 PROPERTIES RUNTIME_OUTPUT_DIRECTORY
-                                        "${PONG_DEPENDENCIES_LIB_DIR}")
-elseif()
-  set_target_properties(LIBRARY_OUTPUT_DIRECTORY "${PONG_DEPENDENCIES_LIB_DIR}")
-endif()

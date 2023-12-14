@@ -19,7 +19,11 @@ const char RESOURCE_PATH[11] = "Resources";
 #elif defined( __APPLE__ )
 #include <TargetConditionals.h>
 #if defined( TARGET_OS_MAC )
+#if defined( PACKAGED )
 const char RESOURCE_PATH[14] = "../Resources";
+#else
+const char RESOURCE_PATH[11] = "Resources";
+#endif
 #endif
 #endif
 

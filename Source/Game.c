@@ -59,7 +59,7 @@ int main( void ) {
 		draw( );
 
 		SDL_GL_SwapWindow( window );
-		SDL_Delay( 32 );
+		SDL_Delay( 16 );
 	}
 	SDL_GL_DeleteContext( context );
 	SDL_DestroyWindow( window );
@@ -125,6 +125,18 @@ void updatePaddles( float delta ) {
 	if ( isKeyDown( PADDLE_2_DOWN ) ) {
 		paddle2YPosition += ( float )PADDLE_SPEED * delta;
 	}
+
+	if ( ( paddle1YPosition + ( float )PADDLE_HEIGHT ) <= 0.0 ) {
+		paddle1YPosition = ( float )WINDOW_HEIGHT;
+	} else if ( paddle1YPosition >= ( float )WINDOW_HEIGHT ) {
+		paddle1YPosition = -( float )PADDLE_HEIGHT;
+	}
+
+	if ( ( paddle2YPosition + ( float )PADDLE_HEIGHT ) <= 0.0 ) {
+		paddle2YPosition = ( float )WINDOW_HEIGHT;
+	} else if ( paddle2YPosition >= ( float )WINDOW_HEIGHT ) {
+		paddle2YPosition = -( float )PADDLE_HEIGHT;
+	}
 }
 void draw( ) {
 	glClear( GL_COLOR_BUFFER_BIT );
@@ -139,7 +151,13 @@ void draw( ) {
 
 	glUniform4f( glGetUniformLocation( defaultShader, "color" ), CLEAR_COLOR_R,
 	             CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A );
+
 	drawRectangle( 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT );
+
+	glUniform4f( glGetUniformLocation( defaultShader, "color" ), 1.0f, 0.0f,
+	             0.0f, 1.0 );
+	drawCircle( 0, 0, 32 );
+
 	drawPaddles( );
 }
 

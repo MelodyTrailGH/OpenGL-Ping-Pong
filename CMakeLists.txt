@@ -10,6 +10,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMake")
 
 find_package(OpenGL REQUIRED)
 
+include("${CMAKE_CURRENT_LIST_DIR}/CMakeOptions.cmake")
+
 set(PONG_DEPENDENCIES_DIR "${CMAKE_CURRENT_LIST_DIR}/Dependencies")
 set(PONG_DEPENDENCIES_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/Dependencies")
 set(PONG_DEPENDENCIES_LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/Shared")
@@ -35,21 +37,24 @@ target_link_libraries(${PONG_TARGET} PRIVATE SDL2::SDL2 libglew_shared cglm)
 
 set(RESOURCES_DIR "${CMAKE_CURRENT_LIST_DIR}/Resources")
 
-if(APPLE)
-  include(BuildAppBundle)
-endif()
+if(${PONG_BUILD_PACKAGE})
+  target_compile_definitions(-DPACKAGED=1)
+  if(APPLE)
+    include(BuildAppBundle)
+  endif()
+else()
+  set(PONG_RUN_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/Game")
 
-if(WIN32)
-  file(GLOB_RECURSE RUNTIME_LIBRARES "${PONG_DEPENDENCIES_LIB_DIR}/*.dll")
-  add_custom_command(
-    TARGET ${PONG_TARGET}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCES_DIR}
-            $<TARGET_FILE_DIR:${PONG_TARGET}>/Resources)
-
-  add_custom_command(
-    TARGET ${PONG_TARGET}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RUNTIME_LIBRARES}
-            $<TARGET_FILE_DIR:${PONG_TARGET}>)
+  set_target_properties(${PONG_TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+                                                  "${PONG_RUN_DIRECTORY}")
+  file(COPY ${RESOURCES_DIR} DESTINATION ${PONG_RUN_DIRECTORY})
+  if(WIN32)
+    set_target_properties(
+      libglew_shared SDL2 cglm PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+                                          "${PONG_RUN_DIRECTORY}")
+  else()
+    set_target_properties(
+      libglew_shared SDL2 cglm PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                          "${PONG_RUN_DIRECTORY}")
+  endif()
 endif()
